@@ -1,12 +1,16 @@
-"""BettingOption Use Cases"""
+"""Betting Use Cases"""
 from typing import List, Optional
 
 from src.domain.betting.entity import BettingOption
-from src.domain.betting.repository import BettingOptionRepository
+from src.domain.betting.repository import BettingOptionRepository, BetRepository
+from src.domain.betting.service import BettingService
 from .dto import (
     BettingOptionDTO,
     CreateBettingOptionDTO,
     UpdateBettingOptionDTO,
+    PlaceBetRequestDTO,
+    BetDTO,
+    BetSlipDTO,
 )
 
 
@@ -68,4 +72,47 @@ class BettingOptionUseCases:
             is_active=option.is_active,
             handicap_value=option.handicap_value,
             over_under_line=option.over_under_line,
+        )
+
+
+class BettingUseCases:
+    """배팅 관련 Use Cases"""
+
+    def __init__(
+        self,
+        betting_service: BettingService,
+        bet_repository: BetRepository,
+    ):
+        self.betting_service = betting_service
+        self.bet_repository = bet_repository
+
+    async def place_bet(self, user_id: str, request_dto: PlaceBetRequestDTO) -> BetDTO:
+        """배팅하기"""
+        bet = await self.betting_service.place_bet(user_id, request_dto)
+        return self._to_bet_dto(bet)
+    
+    async def get_my_bets(self, user_id: str) -> List[BetDTO]:
+        """내 배팅 내역 조회"""
+        bets = await self.bet_repository.find_by_user_id(user_id)
+        return [self._to_bet_dto(bet) for bet in bets]
+
+    def _to_bet_dto(self, bet) -> BetDTO:
+        return BetDTO(
+            bet_id=bet.id,
+            user_id=bet.user_id,
+            bet_type=bet.bet_type.value,
+            total_amount=bet.total_amount,
+            potential_return=bet.potential_return,
+            total_odds=bet.total_odds,
+            status=bet.status.value,
+            slips=[
+                BetSlipDTO(
+                    slip_id=slip.id,
+                    bet_id=slip.bet_id,
+                    game_id=slip.game_id,
+                    option_id=slip.option_id,
+                    odds=slip.odds,
+                    result=slip.result.value,
+                ) for slip in bet.slips
+            ]
         )

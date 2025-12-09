@@ -3,7 +3,7 @@ from decimal import Decimal
 from typing import Optional, List
 from pydantic import BaseModel, Field
 
-from src.domain.betting.enums import BettingOptionTypeEnum
+from src.domain.betting.enums import BettingOptionTypeEnum, BetTypeEnum
 
 
 class BettingOptionResponse(BaseModel):
@@ -35,3 +35,43 @@ class UpdateBettingOptionRequest(BaseModel):
     """배팅 옵션 수정 요청 스키마"""
     odds: Optional[Decimal] = Field(None, gt=0, description="새로운 배당률")
     is_active: Optional[bool] = Field(None, description="활성화 여부")
+
+
+class BetSelectionRequest(BaseModel):
+    """배팅 선택 요청 스키마"""
+    option_id: str = Field(..., description="선택한 배팅 옵션 ID")
+
+
+class PlaceBetRequest(BaseModel):
+    """배팅 요청 스키마"""
+    selections: List[BetSelectionRequest] = Field(..., min_items=1, description="배팅 선택 목록")
+    amount: Decimal = Field(..., gt=0, description="배팅 금액")
+    bet_type: BetTypeEnum = Field(..., description="배팅 타입 (단일/조합)")
+
+
+class BetSlipResponse(BaseModel):
+    """배팅 슬립 응답 스키마"""
+    slip_id: str
+    bet_id: str
+    game_id: str
+    option_id: str
+    odds: Decimal
+    result: str
+
+    class Config:
+        orm_mode = True
+
+
+class BetResponse(BaseModel):
+    """배팅 응답 스키마"""
+    bet_id: str
+    user_id: str
+    bet_type: str
+    total_amount: Decimal
+    potential_return: Decimal
+    total_odds: Decimal
+    status: str
+    slips: List[BetSlipResponse]
+
+    class Config:
+        orm_mode = True
