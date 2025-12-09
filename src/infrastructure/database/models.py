@@ -30,3 +30,13 @@ class UserModel(Base):
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
     is_active = Column(Boolean, default=True, nullable=False)
     is_restricted = Column(Boolean, default=False, nullable=False)
+
+
+class WalletModel(Base):
+    """지갑 테이블"""
+    __tablename__ = "wallets"
+
+    id = Column(CHAR(36), primary_key=True, index=True)
+    user_id = Column(CHAR(36), unique=True, nullable=False, index=True)
+    balance = Column(Numeric(15, 2), default=0.00, nullable=False)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)

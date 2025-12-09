@@ -8,9 +8,16 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.infrastructure.database.connection import get_db
 from src.infrastructure.database.repositories.user_repository import UserRepositoryImpl
+from src.infrastructure.database.repositories.wallet_repository import WalletRepositoryImpl
 from src.infrastructure.auth.jwt_handler import jwt_handler
 from src.infrastructure.auth.token_repository import token_repository
 from src.domain.common.exceptions import AuthenticationException
+from src.domain.user.service import UserService # Added for get_current_user
+from src.domain.wallet.service import WalletService
+from src.application.user.use_cases import UserUseCases # Added for get_current_user
+from src.application.wallet.use_cases import WalletUseCases
+from src.presentation.schemas.user import UserProfileResponse # Added for get_current_user
+
 
 # HTTP Bearer 토큰 스키마
 security = HTTPBearer()
@@ -21,6 +28,41 @@ async def get_user_repository(
 ) -> UserRepositoryImpl:
     """User Repository 의존성"""
     return UserRepositoryImpl(session)
+
+
+async def get_wallet_repository(
+    session: Annotated[AsyncSession, Depends(get_db)]
+) -> WalletRepositoryImpl:
+    """Wallet Repository 의존성"""
+    return WalletRepositoryImpl(session)
+
+
+async def get_user_service(
+    user_repository: Annotated[UserRepositoryImpl, Depends(get_user_repository)]
+) -> UserService:
+    """User Service 의존성"""
+    return UserService(user_repository)
+
+
+async def get_wallet_service(
+    wallet_repository: Annotated[WalletRepositoryImpl, Depends(get_wallet_repository)]
+) -> WalletService:
+    """Wallet Service 의존성"""
+    return WalletService(wallet_repository)
+
+
+async def get_user_use_cases(
+    user_service: Annotated[UserService, Depends(get_user_service)]
+) -> UserUseCases:
+    """User Use Cases 의존성"""
+    return UserUseCases(user_service)
+
+
+async def get_wallet_use_cases(
+    wallet_service: Annotated[WalletService, Depends(get_wallet_service)]
+) -> WalletUseCases:
+    """Wallet Use Cases 의존성"""
+    return WalletUseCases(wallet_service)
 
 
 async def get_current_user_id(
@@ -53,6 +95,23 @@ async def get_current_user_id(
         )
 
 
+async def get_current_user(
+    user_id: Annotated[UUID, Depends(get_current_user_id)],
+    user_use_cases: Annotated[UserUseCases, Depends(get_user_use_cases)]
+) -> UserProfileResponse:
+    """현재 로그인한 사용자 정보 추출"""
+    try:
+        user_dto = await user_use_cases.get_user_profile(user_id)
+        return UserProfileResponse(**user_dto.model_dump())
+    except ResourceNotFoundException:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="사용자를 찾을 수 없습니다.")
+    except Exception:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="사용자 정보를 가져오는 중 오류가 발생했습니다.",
+        )
+
+
 async def get_current_token(
     credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)]
 ) -> str:
@@ -63,4 +122,8 @@ async def get_current_token(
 # 타입 별칭
 CurrentUserId = Annotated[UUID, Depends(get_current_user_id)]
 CurrentToken = Annotated[str, Depends(get_current_token)]
+CurrentUser = Annotated[UserProfileResponse, Depends(get_current_user)]
 UserRepository = Annotated[UserRepositoryImpl, Depends(get_user_repository)]
+WalletRepository = Annotated[WalletRepositoryImpl, Depends(get_wallet_repository)]
+UserUseCases = Annotated[UserUseCases, Depends(get_user_use_cases)]
+WalletUseCases = Annotated[WalletUseCases, Depends(get_wallet_use_cases)]

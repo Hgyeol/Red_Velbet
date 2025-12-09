@@ -54,3 +54,29 @@
   - 완전한 DDD 아키텍처로 인증 시스템 구현
   - bcrypt 비밀번호 해싱, JWT 토큰 기반 인증
   - Refresh Token을 Redis에 저장
+
+### Phase 3: 지갑 도메인 구현
+
+- **브랜치:** `feat/phase3-wallet-domain`
+- **작업 내용:** Phase 3 - 지갑 도메인 구현
+- **변경 사항:**
+  - **도메인 계층:**
+    - `src/domain/wallet/entity.py`: Wallet 엔티티 정의 (잔액 입출금 로직 포함)
+    - `src/domain/wallet/repository.py`: Wallet Repository 인터페이스 정의
+    - `src/domain/wallet/service.py`: Wallet 서비스 정의 (잔액 조회, 입금, 출금)
+  - **인프라 계층:**
+    - `src/infrastructure/database/models.py`: Wallet 데이터베이스 모델 추가
+    - `src/infrastructure/database/repositories/wallet_repository.py`: Wallet Repository 구현
+  - **애플리케이션 계층:**
+    - `src/application/wallet/dto.py`: Wallet 관련 DTO 정의 (잔액, 입금/출금 요청, 거래 내역)
+    - `src/application/wallet/use_cases.py`: Wallet Use Case 정의 (잔액 조회, 입금, 출금)
+  - **프레젠테이션 계층:**
+    - `src/presentation/schemas/wallet.py`: Wallet 관련 Pydantic 스키마 정의
+    - `src/presentation/api/v1/wallet.py`: Wallet API 엔드포인트 구현 (잔액 조회, 입금, 출금)
+    - `src/presentation/api/dependencies.py`: Wallet Repository, Wallet Service, Wallet Use Case 의존성 주입 추가
+  - **기타:**
+    - `src/main.py`: Wallet API 라우터 등록
+- **특이 사항:**
+  - DDD 아키텍처에 따라 지갑 도메인 구현 완료
+  - 사용자 지갑 관리의 핵심 기능(조회, 입금, 출금) 구현
+  - 추후 거래 내역 및 배팅 연동 기능 추가 예정
