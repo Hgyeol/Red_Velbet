@@ -277,3 +277,17 @@ class UpdateUserProfileUseCase:
             is_active=updated_user.is_active,
             is_restricted=updated_user.is_restricted,
         )
+
+
+class UserUseCases:
+    """User Use Cases 통합 클래스"""
+
+    def __init__(self, user_repository: UserRepository):
+        self.user_repository = user_repository
+        self.register_user = RegisterUserUseCase(user_repository)
+        self.login = LoginUseCase(user_repository)
+        self.refresh_token = RefreshTokenUseCase(user_repository)
+        self.logout = LogoutUseCase()
+        self.change_password = ChangePasswordUseCase(user_repository)
+        self.get_user_profile = GetUserProfileUseCase(user_repository)
+        self.update_user_profile = UpdateUserProfileUseCase(user_repository)

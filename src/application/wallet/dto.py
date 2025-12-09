@@ -3,6 +3,7 @@ from datetime import datetime
 from uuid import UUID
 from decimal import Decimal
 from typing import Literal
+from enum import Enum
 
 
 class WalletBalanceDto(BaseModel):
@@ -24,9 +25,12 @@ class WalletWithdrawRequestDto(BaseModel):
     bank_account: str
 
 
-class TransactionTypeEnum(str, Literal["충전", "출금", "배팅", "환급"]):
+class TransactionTypeEnum(str, Enum):
     """거래 타입 Enum"""
-    pass
+    DEPOSIT = "충전"
+    WITHDRAW = "출금"
+    BET = "배팅"
+    REFUND = "환급"
 
 
 class TransactionDto(BaseModel):

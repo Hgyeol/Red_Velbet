@@ -8,8 +8,8 @@ class Settings(BaseSettings):
     # Database
     MYSQL_HOST: str = "localhost"
     MYSQL_PORT: int = 3306
-    MYSQL_USER: str = "root"
-    MYSQL_PASSWORD: str = "password"
+    MYSQL_USER: str = "betting_user"
+    MYSQL_PASSWORD: str = "betting_pass"
     MYSQL_DATABASE: str = "betting_db"
 
     # Redis
@@ -36,7 +36,7 @@ class Settings(BaseSettings):
     @property
     def database_url(self) -> str:
         """MySQL 데이터베이스 URL"""
-        return f"mysql://{self.MYSQL_USER}:{self.MYSQL_PASSWORD}@{self.MYSQL_HOST}:{self.MYSQL_PORT}/{self.MYSQL_DATABASE}"
+        return f"mysql://{self.MYSQL_USER}:{self.MYSQL_PASSWORD}@{self.MYSQL_HOST}:{self.MYSQL_PORT}/{self.MYSQL_DATABASE}?charset=utf8mb4"
 
     @property
     def redis_url(self) -> str:

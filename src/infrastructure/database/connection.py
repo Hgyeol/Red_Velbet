@@ -7,10 +7,10 @@ from src.config import settings
 # SQLAlchemy Base
 Base = declarative_base()
 
-# MySQL Async Engine (mysqlclient는 동기 전용이므로 asyncmy 또는 aiomysql 사용)
-# 참고: requirements.txt에 aiomysql 추가 필요
-# DATABASE_URL 형식: mysql+aiomysql://user:password@host:port/database
-ASYNC_DATABASE_URL = settings.database_url.replace("mysql://", "mysql+aiomysql://")
+# MySQL Async Engine (mysqlclient는 동기 전용이므로 asyncmy 사용)
+# 참고: requirements.txt에 asyncmy 추가 필요
+# DATABASE_URL 형식: mysql+asyncmy://user:password@host:port/database
+ASYNC_DATABASE_URL = settings.database_url.replace("mysql://", "mysql+asyncmy://")
 
 # 비동기 엔진 생성
 engine = create_async_engine(
@@ -19,6 +19,9 @@ engine = create_async_engine(
     pool_pre_ping=True,
     pool_size=10,
     max_overflow=20,
+    connect_args={
+        "charset": "utf8mb4",
+    }
 )
 
 # 비동기 세션 팩토리

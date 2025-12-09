@@ -2,7 +2,7 @@ from pydantic import BaseModel, Field
 from datetime import datetime
 from uuid import UUID
 from decimal import Decimal
-from typing import Literal, Optional
+from typing import Literal, Optional, List
 
 from src.application.wallet.dto import TransactionTypeEnum
 
@@ -10,7 +10,7 @@ from src.application.wallet.dto import TransactionTypeEnum
 class WalletBalanceResponse(BaseModel):
     """지갑 잔액 조회 응답 스키마"""
     wallet_id: UUID = Field(..., description="지갑 ID")
-    balance: Decimal = Field(..., gt==-1, description="현재 잔액")
+    balance: Decimal = Field(..., ge=0, description="현재 잔액")
     updated_at: datetime = Field(..., description="마지막 업데이트 시각 (UTC)")
 
 

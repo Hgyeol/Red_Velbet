@@ -5,7 +5,7 @@ from typing import List, Optional
 from src.application.wallet.dto import WalletBalanceDto, WalletDepositRequestDto, WalletWithdrawRequestDto, TransactionDto
 from src.domain.wallet.service import WalletService
 from src.domain.common.value_objects import Money
-from src.domain.common.exceptions import ResourceNotFoundException, DomainException
+from src.domain.common.exceptions import EntityNotFoundException, DomainException
 
 
 class WalletUseCases:

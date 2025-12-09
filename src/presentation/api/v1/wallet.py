@@ -4,10 +4,10 @@ from uuid import UUID
 
 from src.application.wallet.dto import WalletDepositRequestDto, WalletWithdrawRequestDto
 from src.application.wallet.use_cases import WalletUseCases
-from src.domain.common.exceptions import ResourceNotFoundException, DomainException
-from src.presentation.api.dependencies import get_db_session, get_current_user, get_wallet_use_cases
+from src.domain.common.exceptions import EntityNotFoundException, DomainException
+from src.presentation.api.dependencies import get_current_user, get_wallet_use_cases
 from src.presentation.schemas.common import SuccessResponse
-from src.presentation.schemas.user import UserProfileResponse # Assuming UserProfileResponse is defined here or similar
+from src.presentation.schemas.user import UserResponse
 from src.presentation.schemas.wallet import WalletBalanceResponse, WalletDepositRequest, WalletWithdrawRequest
 
 
@@ -22,7 +22,7 @@ router = APIRouter()
     status_code=status.HTTP_200_OK
 )
 async def get_wallet_balance(
-    current_user: UserProfileResponse = Depends(get_current_user),
+    current_user: UserResponse = Depends(get_current_user),
     wallet_use_cases: WalletUseCases = Depends(get_wallet_use_cases)
 ):
     """
@@ -33,7 +33,7 @@ async def get_wallet_balance(
         return SuccessResponse[WalletBalanceResponse](
             data=WalletBalanceResponse(**balance_dto.model_dump())
         )
-    except ResourceNotFoundException as e:
+    except EntityNotFoundException as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
@@ -48,7 +48,7 @@ async def get_wallet_balance(
 )
 async def deposit_to_wallet(
     request: WalletDepositRequest,
-    current_user: UserProfileResponse = Depends(get_current_user),
+    current_user: UserResponse = Depends(get_current_user),
     wallet_use_cases: WalletUseCases = Depends(get_wallet_use_cases)
 ):
     """
@@ -60,7 +60,7 @@ async def deposit_to_wallet(
         return SuccessResponse[WalletBalanceResponse](
             data=WalletBalanceResponse(**balance_dto.model_dump())
         )
-    except ResourceNotFoundException as e:
+    except EntityNotFoundException as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
     except DomainException as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
@@ -77,7 +77,7 @@ async def deposit_to_wallet(
 )
 async def withdraw_from_wallet(
     request: WalletWithdrawRequest,
-    current_user: UserProfileResponse = Depends(get_current_user),
+    current_user: UserResponse = Depends(get_current_user),
     wallet_use_cases: WalletUseCases = Depends(get_wallet_use_cases)
 ):
     """
@@ -89,7 +89,7 @@ async def withdraw_from_wallet(
         return SuccessResponse[WalletBalanceResponse](
             data=WalletBalanceResponse(**balance_dto.model_dump())
         )
-    except ResourceNotFoundException as e:
+    except EntityNotFoundException as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
     except DomainException as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
@@ -106,7 +106,7 @@ async def withdraw_from_wallet(
 #     status_code=status.HTTP_200_OK
 # )
 # async def get_transactions(
-#     current_user: UserProfileResponse = Depends(get_current_user),
+#     current_user: UserResponse = Depends(get_current_user),
 #     wallet_use_cases: WalletUseCases = Depends(get_wallet_use_cases),
 #     transaction_type: Optional[TransactionTypeEnum] = Query(None, description="거래 타입"),
 #     start_date: Optional[date] = Query(None, description="시작 날짜 (YYYY-MM-DD)"),

@@ -1,10 +1,11 @@
 from uuid import UUID
 from typing import Optional
+from decimal import Decimal
 
 from src.domain.wallet.entity import Wallet
 from src.domain.wallet.repository import WalletRepository
 from src.domain.common.value_objects import Money
-from src.domain.common.exceptions import ResourceNotFoundException, DomainException
+from src.domain.common.exceptions import EntityNotFoundException, DomainException
 
 
 class WalletService:
@@ -22,7 +23,7 @@ class WalletService:
         """
         wallet = await self.wallet_repository.get_by_user_id(user_id)
         if not wallet:
-            raise ResourceNotFoundException(f"User with ID {user_id} does not have a wallet.")
+            raise EntityNotFoundException(f"User with ID {user_id} does not have a wallet.")
         return wallet
 
     async def deposit_to_wallet(self, user_id: UUID, amount: Money) -> Wallet:

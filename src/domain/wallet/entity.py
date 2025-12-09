@@ -12,8 +12,8 @@ class Wallet:
     지갑 도메인 엔티티
     사용자의 자산 정보를 나타냅니다.
     """
-    id: UUID = field(default_factory=uuid4)
     user_id: UUID
+    id: UUID = field(default_factory=uuid4)
     balance: Money = field(default_factory=lambda: Money(Decimal('0.00')))
     updated_at: datetime = field(default_factory=datetime.utcnow)
 
