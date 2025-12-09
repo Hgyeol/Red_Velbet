@@ -29,3 +29,8 @@ class AuthenticationException(DomainException):
 class AuthorizationException(DomainException):
     """권한 없음"""
     pass
+
+
+class InsufficientFundsException(DomainException):
+    """잔액 부족"""
+    pass

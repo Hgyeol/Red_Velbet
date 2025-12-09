@@ -5,7 +5,7 @@ from typing import List
 from src.domain.betting.repository import BetRepository, BetSlipRepository, BettingOptionRepository
 from src.domain.betting.entity import Bet, BetSlip
 from src.domain.wallet.service import WalletService
-from src.domain.common.exceptions import InsufficientFundsException, InvalidBettingException
+from src.domain.common.exceptions import InsufficientFundsException, ValidationException
 from src.application.betting.dto import PlaceBetRequestDTO
 
 
@@ -25,13 +25,13 @@ class BettingService:
     async def place_bet(self, user_id: str, place_bet_dto: PlaceBetRequestDTO) -> Bet:
         # 1. Validate bet selections
         if not place_bet_dto.selections:
-            raise InvalidBettingException("하나 이상의 배팅을 선택해야 합니다.")
+            raise ValidationException("하나 이상의 배팅을 선택해야 합니다.")
 
         total_odds = Decimal(1.0)
         for selection in place_bet_dto.selections:
             option = await self.betting_option_repository.find_by_id(selection.option_id)
             if not option or not option.is_active:
-                raise InvalidBettingException(f"유효하지 않은 배팅 옵션입니다: {selection.option_id}")
+                raise ValidationException(f"유효하지 않은 배팅 옵션입니다: {selection.option_id}")
             total_odds *= option.odds
 
         # 2. Check user's balance

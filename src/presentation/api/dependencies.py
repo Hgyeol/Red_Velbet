@@ -9,7 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from src.infrastructure.database.connection import get_db
 from src.infrastructure.database.repositories.user_repository import UserRepositoryImpl
 from src.infrastructure.database.repositories.wallet_repository import WalletRepositoryImpl
-from src.infrastructure.database.repositories.league_repository import LeagueRepositoryImpl
+from src.infrastructure.database.repositories.league_repository import SQLAlchemyLeagueRepository
 from src.infrastructure.database.repositories.game_repository import GameRepositoryImpl
 from src.infrastructure.database.repositories.betting_repository import (
     BettingOptionRepositoryImpl,
@@ -54,9 +54,9 @@ async def get_wallet_repository(
 
 async def get_league_repository(
     session: Annotated[AsyncSession, Depends(get_db)]
-) -> LeagueRepositoryImpl:
+) -> SQLAlchemyLeagueRepository:
     """League Repository 의존성"""
-    return LeagueRepositoryImpl(session)
+    return SQLAlchemyLeagueRepository(session)
 
 
 async def get_game_repository(
@@ -146,7 +146,7 @@ async def get_wallet_use_cases(
 
 
 async def get_league_use_cases(
-    league_repository: Annotated[LeagueRepositoryImpl, Depends(get_league_repository)]
+    league_repository: Annotated[SQLAlchemyLeagueRepository, Depends(get_league_repository)]
 ) -> LeagueUseCasesClass:
     """League Use Cases 의존성"""
     return LeagueUseCasesClass(league_repository)
@@ -230,7 +230,7 @@ CurrentToken = Annotated[str, Depends(get_current_token)]
 CurrentUser = Annotated[UserResponse, Depends(get_current_user)]
 UserRepository = Annotated[UserRepositoryImpl, Depends(get_user_repository)]
 WalletRepository = Annotated[WalletRepositoryImpl, Depends(get_wallet_repository)]
-LeagueRepository = Annotated[LeagueRepositoryImpl, Depends(get_league_repository)]
+LeagueRepository = Annotated[SQLAlchemyLeagueRepository, Depends(get_league_repository)]
 GameRepository = Annotated[GameRepositoryImpl, Depends(get_game_repository)]
 BettingOptionRepository = Annotated[BettingOptionRepositoryImpl, Depends(get_betting_option_repository)]
 BetRepository = Annotated[BetRepositoryImpl, Depends(get_bet_repository)]
@@ -242,3 +242,4 @@ GameUseCases = Annotated[GameUseCasesClass, Depends(get_game_use_cases)]
 BettingOptionUseCases = Annotated[BettingOptionUseCasesClass, Depends(get_betting_option_use_cases)]
 BettingUseCases = Annotated[BettingUseCasesClass, Depends(get_betting_use_cases)]
 GameService = Annotated[GameService, Depends(get_game_service)]
+

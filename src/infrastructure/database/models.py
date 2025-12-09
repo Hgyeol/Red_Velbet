@@ -17,7 +17,7 @@ class UserModel(Base):
     """사용자 테이블"""
     __tablename__ = "users"
 
-    id = Column(CHAR(36), primary_key=True, index=Next)
+    id = Column(CHAR(36), primary_key=True, index=True)
     username = Column(String(50), unique=True, nullable=False, index=True)
     password_hash = Column(String(255), nullable=False)
     nickname = Column(String(50), nullable=False)
