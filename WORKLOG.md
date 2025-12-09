@@ -80,3 +80,27 @@
   - DDD 아키텍처에 따라 지갑 도메인 구현 완료
   - 사용자 지갑 관리의 핵심 기능(조회, 입금, 출금) 구현
   - 추후 거래 내역 및 배팅 연동 기능 추가 예정
+
+### Phase 4: 리그 도메인 구현
+
+- **브랜치:** `feat/phase4-core-apis`
+- **작업 내용:** Phase 4 - 리그 도메인 구현
+- **변경 사항:**
+  - **도메인 계층:**
+    - `src/domain/league/entity.py`: League 엔티티 정의
+    - `src/domain/league/repository.py`: League Repository 인터페이스 정의
+  - **인프라 계층:**
+    - `src/infrastructure/database/models.py`: League, Game, BettingOption, Favorite, Bet, BetSlip, Transaction 데이터베이스 모델 추가 및 관련 Enum 정의
+    - `src/infrastructure/database/repositories/league_repository.py`: League Repository 구현
+  - **애플리케이션 계층:**
+    - `src/application/league/dto.py`: League 관련 DTO 정의
+    - `src/application/league/use_cases.py`: League Use Case 정의 (생성, 조회, 수정, 삭제)
+  - **프레젠테이션 계층:**
+    - `src/presentation/schemas/league.py`: League 관련 Pydantic 스키마 정의
+    - `src/presentation/api/v1/leagues.py`: League API 엔드포인트 구현 (CRUD)
+    - `src/presentation/api/dependencies.py`: League Repository, League Use Case 의존성 주입 추가
+  - **기타:**
+    - `src/main.py`: League API 라우터 등록
+- **특이 사항:**
+  - DDD 아키텍처에 따라 리그 도메인 구현 완료
+  - 리그 관리의 핵심 기능(생성, 조회, 수정, 삭제) 구현 완료

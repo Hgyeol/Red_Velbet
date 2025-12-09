@@ -9,6 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from src.infrastructure.database.connection import get_db
 from src.infrastructure.database.repositories.user_repository import UserRepositoryImpl
 from src.infrastructure.database.repositories.wallet_repository import WalletRepositoryImpl
+from src.infrastructure.database.repositories.league_repository import LeagueRepositoryImpl
 from src.infrastructure.auth.jwt_handler import jwt_handler
 from src.infrastructure.auth.token_repository import token_repository
 from src.domain.common.exceptions import AuthenticationException, EntityNotFoundException
@@ -16,6 +17,7 @@ from src.domain.user.service import UserService # Added for get_current_user
 from src.domain.wallet.service import WalletService
 from src.application.user.use_cases import UserUseCases as UserUseCasesClass # Added for get_current_user
 from src.application.wallet.use_cases import WalletUseCases as WalletUseCasesClass
+from src.application.league.use_cases import LeagueUseCases as LeagueUseCasesClass
 from src.presentation.schemas.user import UserResponse # Added for get_current_user
 
 
@@ -35,6 +37,13 @@ async def get_wallet_repository(
 ) -> WalletRepositoryImpl:
     """Wallet Repository 의존성"""
     return WalletRepositoryImpl(session)
+
+
+async def get_league_repository(
+    session: Annotated[AsyncSession, Depends(get_db)]
+) -> LeagueRepositoryImpl:
+    """League Repository 의존성"""
+    return LeagueRepositoryImpl(session)
 
 
 async def get_user_service(
@@ -63,6 +72,13 @@ async def get_wallet_use_cases(
 ) -> WalletUseCasesClass:
     """Wallet Use Cases 의존성"""
     return WalletUseCasesClass(wallet_service)
+
+
+async def get_league_use_cases(
+    league_repository: Annotated[LeagueRepositoryImpl, Depends(get_league_repository)]
+) -> LeagueUseCasesClass:
+    """League Use Cases 의존성"""
+    return LeagueUseCasesClass(league_repository)
 
 
 async def get_current_user_id(
@@ -125,5 +141,7 @@ CurrentToken = Annotated[str, Depends(get_current_token)]
 CurrentUser = Annotated[UserResponse, Depends(get_current_user)]
 UserRepository = Annotated[UserRepositoryImpl, Depends(get_user_repository)]
 WalletRepository = Annotated[WalletRepositoryImpl, Depends(get_wallet_repository)]
+LeagueRepository = Annotated[LeagueRepositoryImpl, Depends(get_league_repository)]
 UserUseCases = Annotated[UserUseCasesClass, Depends(get_user_use_cases)]
 WalletUseCases = Annotated[WalletUseCasesClass, Depends(get_wallet_use_cases)]
+LeagueUseCases = Annotated[LeagueUseCasesClass, Depends(get_league_use_cases)]
