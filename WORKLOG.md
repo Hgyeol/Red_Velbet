@@ -128,3 +128,27 @@
 - **특이 사항:**
   - DDD 아키텍처에 따라 게임 도메인 구현 완료
   - 게임 관리의 핵심 기능(CRUD, 스코어 설정) 구현
+
+### Phase 5: 배팅 옵션 도메인 구현
+
+- **브랜치:** `feat/phase4-core-apis`
+- **작업 내용:** Phase 5 - 배팅 옵션 도메인 구현
+- **변경 사항:**
+  - **도메인 계층:**
+    - `src/domain/betting/enums.py`: Betting 관련 Enum 정의
+    - `src/domain/betting/entity.py`: BettingOption 엔티티 정의 및 비즈니스 로직
+    - `src/domain/betting/repository.py`: BettingOption Repository 인터페이스 정의
+  - **인프라 계층:**
+    - `src/infrastructure/database/repositories/betting_repository.py`: BettingOption Repository 구현
+  - **애플리케이션 계층:**
+    - `src/application/betting/dto.py`: BettingOption 관련 DTO 정의
+    - `src/application/betting/use_cases.py`: BettingOption Use Case 정의 (생성, 조회, 수정, 삭제)
+  - **프레젠테이션 계층:**
+    - `src/presentation/schemas/betting.py`: BettingOption 관련 Pydantic 스키마 정의
+    - `src/presentation/api/v1/betting.py`: BettingOption API 엔드포인트 구현 (CRUD)
+    - `src/presentation/api/dependencies.py`: BettingOption Repository, BettingOption Use Case 의존성 주입 추가
+  - **기타:**
+    - `src/main.py`: BettingOption API 라우터 등록
+- **특이 사항:**
+  - DDD 아키텍처에 따라 배팅 옵션 도메인 구현 완료
+  - 배팅 옵션 관리의 핵심 기능(CRUD) 구현

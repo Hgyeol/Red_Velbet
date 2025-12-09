@@ -11,6 +11,7 @@ from src.infrastructure.database.repositories.user_repository import UserReposit
 from src.infrastructure.database.repositories.wallet_repository import WalletRepositoryImpl
 from src.infrastructure.database.repositories.league_repository import LeagueRepositoryImpl
 from src.infrastructure.database.repositories.game_repository import GameRepositoryImpl
+from src.infrastructure.database.repositories.betting_repository import BettingOptionRepositoryImpl
 from src.infrastructure.auth.jwt_handler import jwt_handler
 from src.infrastructure.auth.token_repository import token_repository
 from src.domain.common.exceptions import AuthenticationException, EntityNotFoundException
@@ -20,6 +21,7 @@ from src.application.user.use_cases import UserUseCases as UserUseCasesClass # A
 from src.application.wallet.use_cases import WalletUseCases as WalletUseCasesClass
 from src.application.league.use_cases import LeagueUseCases as LeagueUseCasesClass
 from src.application.game.use_cases import GameUseCases as GameUseCasesClass
+from src.application.betting.use_cases import BettingOptionUseCases as BettingOptionUseCasesClass
 from src.presentation.schemas.user import UserResponse # Added for get_current_user
 
 
@@ -53,6 +55,13 @@ async def get_game_repository(
 ) -> GameRepositoryImpl:
     """Game Repository 의존성"""
     return GameRepositoryImpl(session)
+
+
+async def get_betting_option_repository(
+    session: Annotated[AsyncSession, Depends(get_db)]
+) -> BettingOptionRepositoryImpl:
+    """BettingOption Repository 의존성"""
+    return BettingOptionRepositoryImpl(session)
 
 
 async def get_user_service(
@@ -95,6 +104,13 @@ async def get_game_use_cases(
 ) -> GameUseCasesClass:
     """Game Use Cases 의존성"""
     return GameUseCasesClass(game_repository)
+
+
+async def get_betting_option_use_cases(
+    betting_option_repository: Annotated[BettingOptionRepositoryImpl, Depends(get_betting_option_repository)]
+) -> BettingOptionUseCasesClass:
+    """BettingOption Use Cases 의존성"""
+    return BettingOptionUseCasesClass(betting_option_repository)
 
 
 async def get_current_user_id(
@@ -159,7 +175,9 @@ UserRepository = Annotated[UserRepositoryImpl, Depends(get_user_repository)]
 WalletRepository = Annotated[WalletRepositoryImpl, Depends(get_wallet_repository)]
 LeagueRepository = Annotated[LeagueRepositoryImpl, Depends(get_league_repository)]
 GameRepository = Annotated[GameRepositoryImpl, Depends(get_game_repository)]
+BettingOptionRepository = Annotated[BettingOptionRepositoryImpl, Depends(get_betting_option_repository)]
 UserUseCases = Annotated[UserUseCasesClass, Depends(get_user_use_cases)]
 WalletUseCases = Annotated[WalletUseCasesClass, Depends(get_wallet_use_cases)]
 LeagueUseCases = Annotated[LeagueUseCasesClass, Depends(get_league_use_cases)]
 GameUseCases = Annotated[GameUseCasesClass, Depends(get_game_use_cases)]
+BettingOptionUseCases = Annotated[BettingOptionUseCasesClass, Depends(get_betting_option_use_cases)]

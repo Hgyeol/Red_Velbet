@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from src.infrastructure.database.connection import init_db, close_db
 from src.infrastructure.cache.redis_client import redis_client
-from src.presentation.api.v1 import auth, users, wallet, leagues, games
+from src.presentation.api.v1 import auth, users, wallet, leagues, games, betting
 
 
 @asynccontextmanager
@@ -44,6 +44,7 @@ app.include_router(users.router, prefix="/api/v1")
 app.include_router(wallet.router, prefix="/api/v1/wallet", tags=["Wallet"])
 app.include_router(leagues.router, prefix="/api/v1")
 app.include_router(games.router, prefix="/api/v1")
+app.include_router(betting.router, prefix="/api/v1")
 
 
 @app.get("/")
