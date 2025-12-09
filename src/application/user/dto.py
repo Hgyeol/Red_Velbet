@@ -11,8 +11,10 @@ class UserDTO:
     """사용자 DTO"""
     user_id: UUID
     username: str
-    email: str
     nickname: str
+    bank_name: str
+    account_number: str
+    account_holder: str
     role: str
     daily_limit: Decimal
     today_total_bet: Decimal
@@ -28,8 +30,10 @@ class RegisterUserDTO:
     """회원가입 요청 DTO"""
     username: str
     password: str
-    email: str
     nickname: str
+    bank_name: str
+    account_number: str
+    account_holder: str
 
 
 @dataclass
@@ -52,7 +56,9 @@ class AuthTokenDTO:
 class UpdateProfileDTO:
     """프로필 수정 DTO"""
     nickname: Optional[str] = None
-    email: Optional[str] = None
+    bank_name: Optional[str] = None
+    account_number: Optional[str] = None
+    account_holder: Optional[str] = None
 
 
 @dataclass

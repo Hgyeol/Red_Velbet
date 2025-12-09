@@ -2,15 +2,17 @@
 from datetime import datetime, date
 from decimal import Decimal
 from typing import Optional
-from pydantic import BaseModel, EmailStr, Field, UUID4
+from pydantic import BaseModel, Field, UUID4
 
 
 class UserResponse(BaseModel):
     """사용자 응답"""
     user_id: UUID4
     username: str
-    email: str
     nickname: str
+    bank_name: Optional[str]
+    account_number: Optional[str]
+    account_holder: Optional[str]
     role: str
     daily_limit: Decimal
     today_total_bet: Decimal
@@ -25,8 +27,10 @@ class UserResponse(BaseModel):
             "examples": [{
                 "user_id": "550e8400-e29b-41d4-a716-446655440000",
                 "username": "user123",
-                "email": "user@example.com",
                 "nickname": "닉네임",
+                "bank_name": "KB국민은행",
+                "account_number": "123-456-7890",
+                "account_holder": "홍길동",
                 "role": "user",
                 "daily_limit": 100000,
                 "today_total_bet": 35000,
@@ -43,13 +47,17 @@ class UserResponse(BaseModel):
 class UpdateProfileRequest(BaseModel):
     """프로필 수정 요청"""
     nickname: Optional[str] = Field(None, min_length=2, max_length=50, description="닉네임")
-    email: Optional[EmailStr] = Field(None, description="이메일")
+    bank_name: Optional[str] = Field(None, max_length=50, description="은행명")
+    account_number: Optional[str] = Field(None, max_length=50, description="계좌번호")
+    account_holder: Optional[str] = Field(None, max_length=50, description="예금주")
 
     model_config = {
         "json_schema_extra": {
             "examples": [{
                 "nickname": "새닉네임",
-                "email": "newemail@example.com"
+                "bank_name": "신한은행",
+                "account_number": "110-123-456789",
+                "account_holder": "김신한"
             }]
         }
     }

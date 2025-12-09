@@ -21,8 +21,10 @@ class UserRepositoryImpl(UserRepositoryInterface):
             user_id=UUID(model.id),
             username=model.username,
             password_hash=model.password_hash,
-            email=model.email,
             nickname=model.nickname,
+            bank_name=model.bank_name,
+            account_number=model.account_number,
+            account_holder=model.account_holder,
             role=UserRole(model.role.value),
             daily_limit=model.daily_limit,
             today_total_bet=model.today_total_bet,
@@ -39,8 +41,10 @@ class UserRepositoryImpl(UserRepositoryInterface):
             id=str(entity.user_id),
             username=entity.username,
             password_hash=entity.password_hash,
-            email=entity.email,
             nickname=entity.nickname,
+            bank_name=entity.bank_name,
+            account_number=entity.account_number,
+            account_holder=entity.account_holder,
             role=entity.role.value,
             daily_limit=entity.daily_limit,
             today_total_bet=entity.today_total_bet,
@@ -73,22 +77,9 @@ class UserRepositoryImpl(UserRepositoryInterface):
         model = result.scalar_one_or_none()
         return self._to_entity(model) if model else None
 
-    async def find_by_email(self, email: str) -> Optional[User]:
-        """이메일로 사용자 조회"""
-        stmt = select(UserModel).where(UserModel.email == email)
-        result = await self.session.execute(stmt)
-        model = result.scalar_one_or_none()
-        return self._to_entity(model) if model else None
-
     async def exists_by_username(self, username: str) -> bool:
         """사용자명 존재 여부 확인"""
         stmt = select(UserModel.id).where(UserModel.username == username)
-        result = await self.session.execute(stmt)
-        return result.scalar_one_or_none() is not None
-
-    async def exists_by_email(self, email: str) -> bool:
-        """이메일 존재 여부 확인"""
-        stmt = select(UserModel.id).where(UserModel.email == email)
         result = await self.session.execute(stmt)
         return result.scalar_one_or_none() is not None
 
@@ -104,8 +95,10 @@ class UserRepositoryImpl(UserRepositoryInterface):
         # 모델 필드 업데이트
         model.username = user.username
         model.password_hash = user.password_hash
-        model.email = user.email
         model.nickname = user.nickname
+        model.bank_name = user.bank_name
+        model.account_number = user.account_number
+        model.account_holder = user.account_holder
         model.role = user.role.value
         model.daily_limit = user.daily_limit
         model.today_total_bet = user.today_total_bet

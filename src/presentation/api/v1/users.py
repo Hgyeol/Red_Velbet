@@ -55,7 +55,9 @@ async def update_my_profile(
     try:
         dto = UpdateProfileDTO(
             nickname=request.nickname,
-            email=request.email,
+            bank_name=request.bank_name,
+            account_number=request.account_number,
+            account_holder=request.account_holder,
         )
 
         use_case = UpdateUserProfileUseCase(user_repository)

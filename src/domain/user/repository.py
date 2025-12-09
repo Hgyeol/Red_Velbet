@@ -25,18 +25,8 @@ class UserRepository(ABC):
         pass
 
     @abstractmethod
-    async def find_by_email(self, email: str) -> Optional[User]:
-        """이메일로 사용자 조회"""
-        pass
-
-    @abstractmethod
     async def exists_by_username(self, username: str) -> bool:
         """사용자명 존재 여부 확인"""
-        pass
-
-    @abstractmethod
-    async def exists_by_email(self, email: str) -> bool:
-        """이메일 존재 여부 확인"""
         pass
 
     @abstractmethod

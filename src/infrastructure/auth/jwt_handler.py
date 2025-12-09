@@ -21,7 +21,6 @@ class JWTHandler:
         self,
         user_id: UUID,
         username: str,
-        email: str,
         role: str,
         expires_delta: Optional[timedelta] = None
     ) -> str:
@@ -34,7 +33,6 @@ class JWTHandler:
         to_encode = {
             "user_id": str(user_id),
             "username": username,
-            "email": email,
             "role": role,
             "exp": expire,
             "iat": datetime.utcnow(),

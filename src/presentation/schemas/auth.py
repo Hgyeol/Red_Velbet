@@ -6,16 +6,20 @@ class RegisterRequest(BaseModel):
     """회원가입 요청"""
     username: str = Field(..., min_length=4, max_length=50, description="사용자명")
     password: str = Field(..., min_length=8, description="비밀번호")
-    email: EmailStr = Field(..., description="이메일")
     nickname: str = Field(..., min_length=2, max_length=50, description="닉네임")
+    bank_name: str = Field(..., max_length=50, description="은행명")
+    account_number: str = Field(..., max_length=50, description="계좌번호")
+    account_holder: str = Field(..., max_length=50, description="예금주")
 
     model_config = {
         "json_schema_extra": {
             "examples": [{
                 "username": "user123",
                 "password": "password123!",
-                "email": "user@example.com",
-                "nickname": "닉네임"
+                "nickname": "닉네임",
+                "bank_name": "KB국민은행",
+                "account_number": "123-456-7890",
+                "account_holder": "홍길동"
             }]
         }
     }
@@ -84,7 +88,6 @@ class LoginResponse(BaseModel):
                 "user": {
                     "user_id": "550e8400-e29b-41d4-a716-446655440000",
                     "username": "user123",
-                    "email": "user@example.com",
                     "nickname": "닉네임",
                     "role": "user"
                 }

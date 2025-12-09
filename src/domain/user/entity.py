@@ -19,8 +19,10 @@ class User:
     user_id: UUID = field(default_factory=uuid4)
     username: str = ""
     password_hash: str = ""
-    email: str = ""
     nickname: str = ""
+    bank_name: str = ""
+    account_number: str = ""
+    account_holder: str = ""
     role: UserRole = UserRole.USER
     daily_limit: Decimal = Decimal("100000.00")
     today_total_bet: Decimal = Decimal("0.00")
@@ -35,12 +37,22 @@ class User:
         self.password_hash = new_password_hash
         self.updated_at = datetime.utcnow()
 
-    def update_profile(self, nickname: Optional[str] = None, email: Optional[str] = None) -> None:
+    def update_profile(
+        self,
+        nickname: Optional[str] = None,
+        bank_name: Optional[str] = None,
+        account_number: Optional[str] = None,
+        account_holder: Optional[str] = None,
+    ) -> None:
         """프로필 정보 업데이트"""
         if nickname:
             self.nickname = nickname
-        if email:
-            self.email = email
+        if bank_name:
+            self.bank_name = bank_name
+        if account_number:
+            self.account_number = account_number
+        if account_holder:
+            self.account_holder = account_holder
         self.updated_at = datetime.utcnow()
 
     def set_daily_limit(self, limit: Decimal) -> None:

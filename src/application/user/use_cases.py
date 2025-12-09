@@ -33,15 +33,11 @@ class RegisterUserUseCase:
         """회원가입 실행"""
         # 유효성 검증
         Username(dto.username)
-        Email(dto.email)
         Password(dto.password)
 
         # 중복 체크
         if await self.user_repository.exists_by_username(dto.username):
             raise DuplicateEntityException("이미 존재하는 사용자명입니다")
-
-        if await self.user_repository.exists_by_email(dto.email):
-            raise DuplicateEntityException("이미 존재하는 이메일입니다")
 
         # 비밀번호 해싱
         password_hash = password_hasher.hash(dto.password)
@@ -50,8 +46,10 @@ class RegisterUserUseCase:
         user = User(
             username=dto.username,
             password_hash=password_hash,
-            email=dto.email,
             nickname=dto.nickname,
+            bank_name=dto.bank_name,
+            account_number=dto.account_number,
+            account_holder=dto.account_holder,
             role=UserRole.USER,
         )
 
@@ -62,8 +60,10 @@ class RegisterUserUseCase:
         return UserDTO(
             user_id=saved_user.user_id,
             username=saved_user.username,
-            email=saved_user.email,
             nickname=saved_user.nickname,
+            bank_name=saved_user.bank_name,
+            account_number=saved_user.account_number,
+            account_holder=saved_user.account_holder,
             role=saved_user.role.value,
             daily_limit=saved_user.daily_limit,
             today_total_bet=saved_user.today_total_bet,
@@ -100,7 +100,6 @@ class LoginUseCase:
         access_token = jwt_handler.create_access_token(
             user_id=user.user_id,
             username=user.username,
-            email=user.email,
             role=user.role.value,
         )
 
@@ -118,8 +117,10 @@ class LoginUseCase:
         user_dto = UserDTO(
             user_id=user.user_id,
             username=user.username,
-            email=user.email,
             nickname=user.nickname,
+            bank_name=user.bank_name,
+            account_number=user.account_number,
+            account_holder=user.account_holder,
             role=user.role.value,
             daily_limit=user.daily_limit,
             today_total_bet=user.today_total_bet,
@@ -155,7 +156,6 @@ class RefreshTokenUseCase:
         access_token = jwt_handler.create_access_token(
             user_id=user.user_id,
             username=user.username,
-            email=user.email,
             role=user.role.value,
         )
 
@@ -226,8 +226,10 @@ class GetUserProfileUseCase:
         return UserDTO(
             user_id=user.user_id,
             username=user.username,
-            email=user.email,
             nickname=user.nickname,
+            bank_name=user.bank_name,
+            account_number=user.account_number,
+            account_holder=user.account_holder,
             role=user.role.value,
             daily_limit=user.daily_limit,
             today_total_bet=user.today_total_bet,
@@ -251,14 +253,13 @@ class UpdateUserProfileUseCase:
         if not user:
             raise EntityNotFoundException("사용자를 찾을 수 없습니다")
 
-        # 이메일 변경 시 중복 체크
-        if dto.email and dto.email != user.email:
-            Email(dto.email)
-            if await self.user_repository.exists_by_email(dto.email):
-                raise DuplicateEntityException("이미 존재하는 이메일입니다")
-
         # 프로필 업데이트
-        user.update_profile(nickname=dto.nickname, email=dto.email)
+        user.update_profile(
+            nickname=dto.nickname,
+            bank_name=dto.bank_name,
+            account_number=dto.account_number,
+            account_holder=dto.account_holder,
+        )
 
         # 저장
         updated_user = await self.user_repository.update(user)
@@ -266,8 +267,10 @@ class UpdateUserProfileUseCase:
         return UserDTO(
             user_id=updated_user.user_id,
             username=updated_user.username,
-            email=updated_user.email,
             nickname=updated_user.nickname,
+            bank_name=updated_user.bank_name,
+            account_number=updated_user.account_number,
+            account_holder=updated_user.account_holder,
             role=updated_user.role.value,
             daily_limit=updated_user.daily_limit,
             today_total_bet=updated_user.today_total_bet,

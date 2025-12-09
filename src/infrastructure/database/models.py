@@ -17,11 +17,13 @@ class UserModel(Base):
     """사용자 테이블"""
     __tablename__ = "users"
 
-    id = Column(CHAR(36), primary_key=True, index=True)
+    id = Column(CHAR(36), primary_key=True, index=Next)
     username = Column(String(50), unique=True, nullable=False, index=True)
     password_hash = Column(String(255), nullable=False)
-    email = Column(String(255), unique=True, nullable=False, index=True)
     nickname = Column(String(50), nullable=False)
+    bank_name = Column(String(50), nullable=True)
+    account_number = Column(String(50), nullable=True)
+    account_holder = Column(String(50), nullable=True)
     role = Column(SQLEnum(UserRoleEnum), default=UserRoleEnum.USER, nullable=False, index=True)
     daily_limit = Column(Numeric(15, 2), default=100000.00, nullable=False)
     today_total_bet = Column(Numeric(15, 2), default=0.00, nullable=False)

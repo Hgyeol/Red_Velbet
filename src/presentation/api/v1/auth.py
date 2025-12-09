@@ -49,8 +49,10 @@ async def register(
         dto = RegisterUserDTO(
             username=request.username,
             password=request.password,
-            email=request.email,
             nickname=request.nickname,
+            bank_name=request.bank_name,
+            account_number=request.account_number,
+            account_holder=request.account_holder,
         )
 
         use_case = RegisterUserUseCase(user_repository)
@@ -103,7 +105,6 @@ async def login(
             user={
                 "user_id": str(user_dto.user_id),
                 "username": user_dto.username,
-                "email": user_dto.email,
                 "nickname": user_dto.nickname,
                 "role": user_dto.role,
             },
