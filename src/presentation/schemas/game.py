@@ -57,3 +57,8 @@ class GameListResponse(BaseModel):
     """게임 목록 응답 스키마"""
     items: List[GameResponse]
     pagination: PaginationInfo
+
+
+class SettleGameRequest(BaseModel):
+    """게임 정산 요청 스키마"""
+    winning_option_ids: List[str] = Field(..., min_items=1, description="적중한 배팅 옵션 ID 목록")

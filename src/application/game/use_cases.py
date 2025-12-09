@@ -4,20 +4,23 @@ from typing import Optional
 
 from src.domain.game.entity import Game
 from src.domain.game.repository import GameRepository
+from src.domain.game.service import GameService
 from .dto import (
     GameDTO,
     CreateGameDTO,
     UpdateGameDTO,
     SetFinalScoreDTO,
     GameListDTO,
+    SettleGameRequestDTO,
 )
 
 
 class GameUseCases:
     """게임 관련 Use Cases"""
 
-    def __init__(self, game_repository: GameRepository):
+    def __init__(self, game_repository: GameRepository, game_service: GameService):
         self.game_repository = game_repository
+        self.game_service = game_service
 
     async def create_game(self, create_dto: CreateGameDTO) -> GameDTO:
         """게임 생성"""
@@ -102,6 +105,10 @@ class GameUseCases:
     async def delete_game(self, game_id: str) -> bool:
         """게임 삭제"""
         return await self.game_repository.delete(game_id)
+
+    async def settle_game(self, game_id: str, request_dto: SettleGameRequestDTO):
+        """게임 정산"""
+        await self.game_service.settle_game(game_id, request_dto.winning_option_ids)
 
     def _to_dto(self, game: Game) -> GameDTO:
         """Game 엔티티를 GameDTO로 변환"""

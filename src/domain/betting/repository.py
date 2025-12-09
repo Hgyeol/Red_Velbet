@@ -46,6 +46,11 @@ class BetRepository(ABC):
         """사용자 ID로 배팅 목록 조회"""
         raise NotImplementedError
 
+    @abstractmethod
+    async def find_by_game_id(self, game_id: str) -> List[Bet]:
+        """게임 ID로 배팅 목록 조회"""
+        raise NotImplementedError
+
 
 class BetSlipRepository(ABC):
     """배팅 슬립 리포지토리 인터페이스"""

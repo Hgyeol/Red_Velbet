@@ -144,7 +144,7 @@
   - **애플리케이션 계층:**
     - `src/application/betting/dto.py`: 배팅 관련 DTO 정의 (배팅 옵션 및 배팅 요청)
     - `src/application/betting/use_cases.py`: BettingOption 및 Betting Use Case 정의
-  - **프레젠테이션 계층:**
+  - **프레젠테ATION 계층:**
     - `src/presentation/schemas/betting.py`: 배팅 관련 Pydantic 스키마 정의
     - `src/presentation/api/v1/betting.py`: 배팅 및 배팅 옵션 API 엔드포인트 구현
     - `src/presentation/api/dependencies.py`: 배팅 관련 의존성 주입 추가
@@ -153,3 +153,24 @@
 - **특이 사항:**
   - DDD 아키텍처에 따라 배팅 및 배팅 옵션 도메인 구현 완료
   - 사용자의 배팅 생성 및 조회 기능 구현
+
+### Phase 6: 게임 정산 기능 구현
+
+- **브랜치:** `feat/phase4-core-apis`
+- **작업 내용:** Phase 6 - 게임 정산 기능 구현
+- **변경 사항:**
+  - **도메인 계층:**
+    - `src/domain/game/service.py`: 게임 정산 로직을 처리하는 GameService 구현
+    - `src/domain/betting/repository.py`: `find_by_game_id` 메소드 추가
+  - **인프라 계층:**
+    - `src/infrastructure/database/repositories/betting_repository.py`: `find_by_game_id` 메소드 구현
+  - **애플리케이션 계층:**
+    - `src/application/game/dto.py`: 게임 정산 관련 DTO 추가
+    - `src/application/game/use_cases.py`: 게임 정산 Use Case 추가
+  - **프레젠테이션 계층:**
+    - `src/presentation/schemas/game.py`: 게임 정산 관련 Pydantic 스키마 추가
+    - `src/presentation/api/v1/games.py`: 게임 정산 API 엔드포인트 구현
+    - `src/presentation/api/dependencies.py`: 게임 정산 관련 의존성 주입 추가
+- **특이 사항:**
+  - 게임 정산 기능의 핵심 로직 구현
+  - 수동으로 게임을 정산하는 엔드포인트 추가

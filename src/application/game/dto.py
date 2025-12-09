@@ -61,3 +61,9 @@ class GameListDTO:
     page: int
     limit: int
     total_pages: int
+
+
+@dataclass
+class SettleGameRequestDTO:
+    """게임 정산 요청 DTO"""
+    winning_option_ids: List[str]

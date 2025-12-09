@@ -22,6 +22,7 @@ from src.domain.common.exceptions import AuthenticationException, EntityNotFound
 from src.domain.user.service import UserService
 from src.domain.wallet.service import WalletService
 from src.domain.betting.service import BettingService
+from src.domain.game.service import GameService
 from src.application.user.use_cases import UserUseCases as UserUseCasesClass
 from src.application.wallet.use_cases import WalletUseCases as WalletUseCasesClass
 from src.application.league.use_cases import LeagueUseCases as LeagueUseCasesClass
@@ -115,6 +116,21 @@ async def get_betting_service(
     )
 
 
+async def get_game_service(
+    game_repository: Annotated[GameRepositoryImpl, Depends(get_game_repository)],
+    bet_repository: Annotated[BetRepositoryImpl, Depends(get_bet_repository)],
+    bet_slip_repository: Annotated[BetSlipRepositoryImpl, Depends(get_bet_slip_repository)],
+    wallet_service: Annotated[WalletService, Depends(get_wallet_service)],
+) -> GameService:
+    """Game Service 의존성"""
+    return GameService(
+        game_repository,
+        bet_repository,
+        bet_slip_repository,
+        wallet_service,
+    )
+
+
 async def get_user_use_cases(
     user_repository: Annotated[UserRepositoryImpl, Depends(get_user_repository)]
 ) -> UserUseCasesClass:
@@ -137,10 +153,11 @@ async def get_league_use_cases(
 
 
 async def get_game_use_cases(
-    game_repository: Annotated[GameRepositoryImpl, Depends(get_game_repository)]
+    game_repository: Annotated[GameRepositoryImpl, Depends(get_game_repository)],
+    game_service: Annotated[GameService, Depends(get_game_service)],
 ) -> GameUseCasesClass:
     """Game Use Cases 의존성"""
-    return GameUseCasesClass(game_repository)
+    return GameUseCasesClass(game_repository, game_service)
 
 
 async def get_betting_option_use_cases(
@@ -224,3 +241,4 @@ LeagueUseCases = Annotated[LeagueUseCasesClass, Depends(get_league_use_cases)]
 GameUseCases = Annotated[GameUseCasesClass, Depends(get_game_use_cases)]
 BettingOptionUseCases = Annotated[BettingOptionUseCasesClass, Depends(get_betting_option_use_cases)]
 BettingUseCases = Annotated[BettingUseCasesClass, Depends(get_betting_use_cases)]
+GameService = Annotated[GameService, Depends(get_game_service)]

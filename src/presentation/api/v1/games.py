@@ -10,8 +10,9 @@ from src.presentation.schemas.game import (
     UpdateGameRequest,
     SetFinalScoreRequest,
     GameListResponse,
+    SettleGameRequest,
 )
-from src.presentation.api.dependencies import get_game_use_cases # This will be created later
+from src.presentation.api.dependencies import get_game_use_cases
 
 router = APIRouter(prefix="/games", tags=["games"])
 
@@ -149,4 +150,26 @@ async def delete_game(
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"게임을 찾을 수 없습니다: {game_id}"
+        )
+
+
+@router.post(
+    "/{game_id}/settle",
+    status_code=status.HTTP_204_NO_CONTENT,
+    summary="게임 정산",
+    description="게임 결과를 정산하고 배팅을 처리합니다."
+)
+async def settle_game(
+    game_id: str,
+    request: SettleGameRequest,
+    use_cases: GameUseCases = Depends(get_game_use_cases)
+) -> None:
+    """게임 정산"""
+    try:
+        request_dto = SettleGameRequestDTO(**request.model_dump())
+        await use_cases.settle_game(game_id, request_dto)
+    except ValueError as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(e)
         )

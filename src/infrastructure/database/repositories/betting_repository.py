@@ -99,6 +99,20 @@ class BetRepositoryImpl(BetRepository):
         result = await self.session.execute(stmt)
         return [self._to_entity(model) for model in result.scalars().all()]
 
+    async def find_by_game_id(self, game_id: str) -> List[Bet]:
+        # First, find all bet_ids from BetSlipModel for the given game_id
+        slip_stmt = select(BetSlipModel.bet_id).where(BetSlipModel.game_id == game_id).distinct()
+        slip_result = await self.session.execute(slip_stmt)
+        bet_ids = [row[0] for row in slip_result.all()]
+
+        if not bet_ids:
+            return []
+
+        # Then, find all bets with those bet_ids
+        bet_stmt = select(BetModel).where(BetModel.id.in_(bet_ids))
+        bet_result = await self.session.execute(bet_stmt)
+        return [self._to_entity(model) for model in bet_result.scalars().all()]
+
     def _to_entity(self, model: BetModel) -> Bet:
         return Bet(
             id=model.id,
