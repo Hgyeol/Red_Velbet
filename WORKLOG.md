@@ -104,3 +104,27 @@
 - **특이 사항:**
   - DDD 아키텍처에 따라 리그 도메인 구현 완료
   - 리그 관리의 핵심 기능(생성, 조회, 수정, 삭제) 구현 완료
+
+### Phase 4.5: 게임 도메인 구현
+
+- **브랜치:** `feat/phase4-core-apis`
+- **작업 내용:** Phase 4.5 - 게임 도메인 구현
+- **변경 사항:**
+  - **도메인 계층:**
+    - `src/domain/game/enums.py`: Game 관련 Enum 정의 (SportTypeEnum, GameStatusEnum)
+    - `src/domain/game/entity.py`: Game 엔티티 정의 및 비즈니스 로직
+    - `src/domain/game/repository.py`: Game Repository 인터페이스 정의
+  - **인프라 계층:**
+    - `src/infrastructure/database/repositories/game_repository.py`: Game Repository 구현
+  - **애플리케이션 계층:**
+    - `src/application/game/dto.py`: Game 관련 DTO 정의
+    - `src/application/game/use_cases.py`: Game Use Case 정의 (생성, 조회, 수정, 스코어 설정, 삭제)
+  - **프레젠테이션 계층:**
+    - `src/presentation/schemas/game.py`: Game 관련 Pydantic 스키마 정의
+    - `src/presentation/api/v1/games.py`: Game API 엔드포인트 구현 (CRUD 및 스코어 설정)
+    - `src/presentation/api/dependencies.py`: Game Repository, Game Use Case 의존성 주입 추가
+  - **기타:**
+    - `src/main.py`: Game API 라우터 등록
+- **특이 사항:**
+  - DDD 아키텍처에 따라 게임 도메인 구현 완료
+  - 게임 관리의 핵심 기능(CRUD, 스코어 설정) 구현
